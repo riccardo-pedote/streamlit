@@ -10,7 +10,7 @@ with st.container():
   with col2:
     coi=st.slider('Coinquilini:',2,10,4)
   ute=st.checkbox('Utenze incluse')
-  lr_room=joblib.load('lr_room.sav')
+  lr_room=joblib.load('./lr_room.sav')
   pre=round(lr_room.predict([[sup,ute,coi]])[0])
   ''
   st.header(f'Il prezzo stimato è {pre}€')
