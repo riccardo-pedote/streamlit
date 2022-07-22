@@ -1,7 +1,12 @@
 #streamlit run /Users/rp/Documents/Master/Python/streamlit/model_test.py
 import streamlit as st
 import joblib
+
+#check current folder
+import os
+path = os.path.abspath(__file__)
 with st.container():
+  st.text(path)
   st.title('MODEL TEST')
   ''
   col1,col2=st.columns(2)
