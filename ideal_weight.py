@@ -1,4 +1,3 @@
-#streamlit run /Users/rp/Documents/Master/Python/streamlit/ideal_weight.py
 import streamlit as st
 with st.sidebar:
   um=st.radio('Unit of measure:',['Metric','Imperial'])
