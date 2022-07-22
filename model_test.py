@@ -1,4 +1,3 @@
-#streamlit run /Users/rp/Documents/Master/Python/streamlit/model_test.py
 import streamlit as st
 import joblib
 with st.container():
