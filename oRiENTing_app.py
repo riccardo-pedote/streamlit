@@ -51,10 +51,10 @@ with st.container():
     ''
     ind2=st.text_input('Indirizzo:',key='ind2')
     ''
-    col1,col2,col3=st.columns(3)
+    col1,col2=st.columns(2)
     with col1:
       sup2=st.slider('Superficie della stanza:',27,250,27,key='sup2')
-    with col3:
+    with col2:
       per2=st.slider('Numero di inquilini:',1,8,1,key='per2')
     ''
     col1,col2,col3,col4=st.columns(4)
