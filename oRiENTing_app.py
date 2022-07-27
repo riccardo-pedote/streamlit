@@ -37,10 +37,10 @@ with st.container():
       loc=geo.geocode(ind1)
       coo=pd.DataFrame({'lat':loc.latitude,'lon':[loc.longitude]})
       if loc.address.find('Madrid')>-1:
-        lr_f=joblib.load('/app/streamlit/lr_mr.sav')
+        lr_f=joblib.load('/app/streamlit/lr_mf.sav')
       if loc.address.find('Paris')>-1:
-        lr_r=joblib.load('/app/streamlit/lr_pr.sav')
-      pre=round(lr_r.predict([[sup1,cam1,per1,gia1,bap1,bac1,con1,lvt1,asc1,lvs1,ute1]])[0])
+        lr_f=joblib.load('/app/streamlit/lr_pf.sav')
+      pre=round(lr_f.predict([[sup1,cam1,per1,gia1,bap1,bac1,con1,lvt1,asc1,lvs1,ute1]])[0])
       st.subheader(f'Il prezzo stimato è {pre}€')
       ''
       with st.expander(loc.address,True):
@@ -77,10 +77,10 @@ with st.container():
       loc=geo.geocode(ind2)
       coo=pd.DataFrame({'lat':loc.latitude,'lon':[loc.longitude]})
       if loc.address.find('Madrid')>-1:
-        lr_f=joblib.load('/app/streamlit/lr_mf.sav')
+        lr_r=joblib.load('/app/streamlit/lr_mr.sav')
       if loc.address.find('Paris')>-1:
-        lr_f=joblib.load('/app/streamlit/lr_pf.sav')
-      pre=round(lr_f.predict([[sup2,per2,wcp2,gia2,bap2,bac2,con2,lvt2,asc2,lvs2,ute2]])[0])
+        lr_r=joblib.load('/app/streamlit/lr_pr.sav')
+      pre=round(lr_r.predict([[sup2,per2,wcp2,gia2,bap2,bac2,con2,lvt2,asc2,lvs2,ute2]])[0])
       st.subheader(f'Il prezzo stimato è {pre}€')
       ''
       with st.expander(loc.address,True):
