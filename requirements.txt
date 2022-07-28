@@ -1,3 +1,5 @@
 joblib
 sklearn
 geopy
+pyshp
+shapely
