@@ -1,15 +1,16 @@
 import streamlit as st
+import matplotlib.image as image
 import pandas as pd
 import joblib
 import geopy
+from geopy.distance import distance
 import shapefile
 from shapely.geometry import Point
 from shapely.geometry import shape
 path='/app/streamlit/'
 geo=geopy.geocoders.Nominatim(user_agent='rp')
 with st.container():
-  st.title('oRiENTing')
-  ''
+  st.image(image.imread(path+'logo.png'))
   tab1,tab2=st.tabs(['Appartamento','Stanza'])
   with tab1:
     ''
@@ -19,49 +20,68 @@ with st.container():
     with col1:
       sup1=st.slider('Superficie dell\'appartamento:',25,250,50,key='sup1')
     with col2:
-      cam1=st.slider('Numero di camere da letto:',1,4,2,key='cam1')
+      cam1=st.slider('Numero di camere da letto:',1,4,1,key='cam1')
     with col3:
-      per1=st.slider('Numero di persone:',1,8,4,key='per1')
+      per1=st.slider('Numero di persone:',1,8,2,key='per1')
     ''
     col1,col2,col3,col4=st.columns(4)
     with col1:
       ute1=st.checkbox('Utenze incluse',key='ute1')
       gia1=st.checkbox('Giardino',key='gia1')
     with col2:
-      bap1=st.checkbox('Balcone privato',key='bap1')
-      bac1=st.checkbox('Balcone comune',key='bac1')
-    with col3:
+      bal1=st.checkbox('Balcone',key='bal1')
       lvt1=st.checkbox('Lavatrice',key='lvt1')
+    with col3:
       asc1=st.checkbox('Asciugatrice',key='asc1')
-    with col4:
       lvs1=st.checkbox('Lavastoviglie',key='lvs1')
+    with col4:
       con1=st.checkbox('Condizionatore',key='con1')
     ''
     try:
       loc1=geo.geocode(ind1)
-      coo=pd.DataFrame({'lat':loc1.latitude,'lon':[loc1.longitude]})
+      coo1=pd.DataFrame({'lat':[loc1.latitude],'lon':[loc1.longitude]})
       if loc1.address.find('Madrid')>-1:
         i=1
         ds=shapefile.Reader(path+'madrid_shapes.shp')
         dp=pd.read_csv(path+'madrid_prices.csv')
-        lr_f=joblib.load(path+'lr_mf.sav')
+        mod1=joblib.load(path+'rf_mf.sav')
+        poi1=pd.read_csv(path+'madrid_poi.csv')
       if loc1.address.find('Paris')>-1:
         i=3
         ds=shapefile.Reader(path+'paris_shapes.shp')
         dp=pd.read_csv(path+'paris_prices.csv')
-        lr_f=joblib.load(path+'lr_pf.sav')
-      dis1=min(dp.Prezzo)
+        mod1=joblib.load(path+'rf_pf.sav')
+        poi1=pd.read_csv(path+'paris_poi.csv')
+      dpr1=min(dp.Prezzo)
       for s in range(len(ds.shapes())):
         if Point(loc1.longitude,loc1.latitude).within(shape(ds.shapes()[s])):
-          dis1=ds.records()[s][i]
+          dpr1=ds.records()[s][i]
       for p in dp.index:
-        if dis1==dp.Distretto[p]:
-          dis1=dp.Prezzo[p]
-      pre=round(lr_f.predict([[dis1,sup1,cam1,per1,gia1,bap1,bac1,con1,lvt1,asc1,lvs1,ute1]])[0])
-      st.subheader(f'L\'affitto mensile stimato dell\'appartamento è {pre}€')
+        if dpr1==dp.Distretto[p]:
+          dpr1=dp.Prezzo[p]
+      dis1=[]; nam1=[]
+      for t in ['Supermarket','Coworking','Metro','Treno','Università','Ospedale']:
+        d1=10**6
+        for i in poi1[poi1.Tipologia==t].index:
+          if distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km*1000<d1:
+            d1=distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km*1000
+            n1=poi1.Nome[i]
+        dis1.append(d1); nam1.append(n1)
+      pre1=round(mod1.predict([[dpr1,cam1,sup1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1]])[0])
+      st.subheader(f'L\'affitto mensile stimato della stanza è {pre1}€')
       ''
-      with st.expander(loc1.address,True):
-        st.map(coo)
+      with st.expander('Punti di interesse:',True):
+        ''
+        f'- Il supermarket più vicino è "{nam1[0]}" e dista {round(dis1[0])}m'
+        f'- Il coworking più vicino è "{nam1[1]}" e dista {round(dis1[1])}m'
+        f'- La metro più vicina è "{nam1[2]}" e dista {round(dis1[2])}m'
+        f'- Il treno più vicino è "{nam1[3]}" e dista {round(dis1[3])}m'
+        f'- L\'università più vicina è "{nam1[4]}" e dista {round(dis1[4])}m'
+        f'- L\'ospedale più vicino è "{nam1[5]}" e dista {round(dis1[5])}m'
+        ''
+      ''
+      with st.expander(loc1.address,False):
+        st.map(coo1)
     except:
       pass
   with tab2:
@@ -78,41 +98,60 @@ with st.container():
     with col1:
       ute2=st.checkbox('Utenze incluse',key='ute2')
       gia2=st.checkbox('Giardino',key='gia2')
-      wcp2=st.checkbox('WC privato',key='wcp2')
     with col2:
-      bap2=st.checkbox('Balcone privato',key='bap2')
-      bac2=st.checkbox('Balcone comune',key='bac2')
-    with col3:
+      bal2=st.checkbox('Balcone',key='bal2')
       lvt2=st.checkbox('Lavatrice',key='lvt2')
+    with col3:
       asc2=st.checkbox('Asciugatrice',key='asc2')
-    with col4:
       lvs2=st.checkbox('Lavastoviglie',key='lvs2')
+    with col4:
       con2=st.checkbox('Condizionatore',key='con2')
+      wcp2=st.checkbox('WC privato',key='wcp2')
     ''
     try:
       loc2=geo.geocode(ind2)
-      coo=pd.DataFrame({'lat':loc2.latitude,'lon':[loc2.longitude]})
+      coo2=pd.DataFrame({'lat':[loc2.latitude],'lon':[loc2.longitude]})
       if loc2.address.find('Madrid')>-1:
         i=1
         ds=shapefile.Reader(path+'madrid_shapes.shp')
         dp=pd.read_csv(path+'madrid_prices.csv')
-        lr_r=joblib.load(path+'lr_mr.sav')
+        mod2=joblib.load(path+'rf_mr.sav')
+        poi2=pd.read_csv(path+'madrid_poi.csv')
       if loc2.address.find('Paris')>-1:
         i=3
         ds=shapefile.Reader(path+'paris_shapes.shp')
         dp=pd.read_csv(path+'paris_prices.csv')
-        lr_r=joblib.load(path+'lr_pr.sav')
-      dis2=min(dp.Prezzo)
+        mod2=joblib.load(path+'rf_pr.sav')
+        poi2=pd.read_csv(path+'paris_poi.csv')
+      dpr2=min(dp.Prezzo)
       for s in range(len(ds.shapes())):
         if Point(loc2.longitude,loc2.latitude).within(shape(ds.shapes()[s])):
-          dis2=ds.records()[s][i]
+          dpr2=ds.records()[s][i]
       for p in dp.index:
-        if dis2==dp.Distretto[p]:
-          dis2=dp.Prezzo[p]
-      pre=round(lr_r.predict([[dis2,sup2,per2,wcp2,gia2,bap2,bac2,con2,lvt2,asc2,lvs2,ute2]])[0])
-      st.subheader(f'L\'affitto mensile stimato della stanza è {pre}€')
+        if dpr2==dp.Distretto[p]:
+          dpr2=dp.Prezzo[p]
+      dis2=[]; nam2=[]
+      for t in ['Supermarket','Coworking','Metro','Treno','Università','Ospedale']:
+        d2=10**6
+        for i in poi2[poi2.Tipologia==t].index:
+          if distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km*1000<d2:
+            d2=distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km*1000
+            n2=poi2.Nome[i]
+        dis2.append(d2); nam2.append(n2)
+      pre2=round(mod2.predict([[dpr2,sup2,per2,wcp2,gia2,bal2,con2,lvt2,asc2,lvs2,ute2]])[0])
+      st.subheader(f'L\'affitto mensile stimato della stanza è {pre2}€')
       ''
-      with st.expander(loc2.address,True):
-        st.map(coo)
+      with st.expander('Punti di interesse:',True):
+        ''
+        f'- Il supermarket più vicino è "{nam2[0]}" e dista {round(dis2[0])}m'
+        f'- Il coworking più vicino è "{nam2[1]}" e dista {round(dis2[1])}m'
+        f'- La metro più vicina è "{nam2[2]}" e dista {round(dis2[2])}m'
+        f'- Il treno più vicino è "{nam2[3]}" e dista {round(dis2[3])}m'
+        f'- L\'università più vicina è "{nam2[4]}" e dista {round(dis2[4])}m'
+        f'- L\'ospedale più vicino è "{nam2[5]}" e dista {round(dis2[5])}m'
+        ''
+      ''
+      with st.expander(loc2.address,False):
+        st.map(coo2)
     except:
       pass
