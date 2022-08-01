@@ -9,6 +9,8 @@ from shapely.geometry import Point
 from shapely.geometry import shape
 path='/app/streamlit/'
 geo=geopy.geocoders.Nominatim(user_agent='rp')
+with st.sidebar:
+  mod=st.radio('Modello:',['Regressione Lineare','Random Forest'])
 with st.container():
   st.image(image.imread(path+'logo.png'))
   tab1,tab2=st.tabs(['Appartamento','Stanza'])
@@ -44,13 +46,13 @@ with st.container():
         i=1
         ds=shapefile.Reader(path+'madrid_shapes.shp')
         dp=pd.read_csv(path+'madrid_prices.csv')
-        mod1=joblib.load(path+'lr_mf.sav')
+        mod1=joblib.load(path+'lr_mf.sav') if mod=='Regressione Lineare' else joblib.load(path+'rf_mf.sav')
         poi1=pd.read_csv(path+'madrid_poi.csv')
       if loc1.address.find('Paris')>-1:
         i=3
         ds=shapefile.Reader(path+'paris_shapes.shp')
         dp=pd.read_csv(path+'paris_prices.csv')
-        mod1=joblib.load(path+'lr_pf.sav')
+        mod1=joblib.load(path+'lr_pf.sav') if mod=='Regressione Lineare' else joblib.load(path+'rf_pf.sav')
         poi1=pd.read_csv(path+'paris_poi.csv')
       dpr1=min(dp.Prezzo)
       for s in range(len(ds.shapes())):
@@ -117,13 +119,13 @@ with st.container():
         i=1
         ds=shapefile.Reader(path+'madrid_shapes.shp')
         dp=pd.read_csv(path+'madrid_prices.csv')
-        mod2=joblib.load(path+'lr_mr.sav')
+        mod2=joblib.load(path+'lr_mr.sav') if mod=='Regressione Lineare' else joblib.load(path+'rf_mr.sav')
         poi2=pd.read_csv(path+'madrid_poi.csv')
       if loc2.address.find('Paris')>-1:
         i=3
         ds=shapefile.Reader(path+'paris_shapes.shp')
         dp=pd.read_csv(path+'paris_prices.csv')
-        mod2=joblib.load(path+'lr_pr.sav')
+        mod2=joblib.load(path+'lr_pr.sav') if mod=='Regressione Lineare' else joblib.load(path+'rf_pr.sav')
         poi2=pd.read_csv(path+'paris_poi.csv')
       dpr2=min(dp.Prezzo)
       for s in range(len(ds.shapes())):
