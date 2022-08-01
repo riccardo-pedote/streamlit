@@ -44,13 +44,13 @@ with st.container():
         i=1
         ds=shapefile.Reader(path+'madrid_shapes.shp')
         dp=pd.read_csv(path+'madrid_prices.csv')
-        mod1=joblib.load(path+'rf_mf.sav')
+        mod1=joblib.load(path+'lr_mf.sav')
         poi1=pd.read_csv(path+'madrid_poi.csv')
       if loc1.address.find('Paris')>-1:
         i=3
         ds=shapefile.Reader(path+'paris_shapes.shp')
         dp=pd.read_csv(path+'paris_prices.csv')
-        mod1=joblib.load(path+'rf_pf.sav')
+        mod1=joblib.load(path+'lr_pf.sav')
         poi1=pd.read_csv(path+'paris_poi.csv')
       dpr1=min(dp.Prezzo)
       for s in range(len(ds.shapes())):
@@ -60,30 +60,32 @@ with st.container():
         if dpr1==dp.Distretto[p]:
           dpr1=dp.Prezzo[p]
       dis1=[]; nam1=[]
-      for t in ['Supermarket','Coworking','Metro','Treno','Università','Ospedale']:
-        d1=10**6
+      for t in ['Metro','Treno','Supermarket','Coworking','Università','Ospedale']:
+        d1=100
         for i in poi1[poi1.Tipologia==t].index:
-          if distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km*1000<d1:
-            d1=distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km*1000
+          if distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km<d1:
+            d1=distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km
             n1=poi1.Nome[i]
-        dis1.append(d1); nam1.append(n1)
-      pre1=round(mod1.predict([[dpr1,cam1,sup1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1]])[0])
+        dis1.append(round(d1*1000)); nam1.append(n1)
+      pre1=round(mod1.predict([[dpr1,cam1,sup1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,
+                                dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
       st.subheader(f'L\'affitto mensile stimato della stanza è {pre1}€')
       ''
       with st.expander('Punti di interesse:',True):
         ''
-        f'- Il supermarket più vicino è "{nam1[0]}" e dista {round(dis1[0])}m'
-        f'- Il coworking più vicino è "{nam1[1]}" e dista {round(dis1[1])}m'
-        f'- La metro più vicina è "{nam1[2]}" e dista {round(dis1[2])}m'
-        f'- Il treno più vicino è "{nam1[3]}" e dista {round(dis1[3])}m'
-        f'- L\'università più vicina è "{nam1[4]}" e dista {round(dis1[4])}m'
-        f'- L\'ospedale più vicino è "{nam1[5]}" e dista {round(dis1[5])}m'
+        f'- La metro più vicina è "{nam1[0]}" e dista {dis1[0]}m'
+        f'- Il treno più vicino è "{nam1[1]}" e dista {dis1[1]}m'
+        f'- Il supermarket più vicino è "{nam1[2]}" e dista {dis1[2]}m'
+        f'- Il coworking più vicino è "{nam1[3]}" e dista {dis1[3]}m'
+        f'- L\'università più vicina è "{nam1[4]}" e dista {dis1[4]}m'
+        f'- L\'ospedale più vicino è "{nam1[5]}" e dista {dis1[5]}m'
         ''
       ''
       with st.expander(loc1.address,False):
         st.map(coo1)
     except:
-      pass
+      if ind1!='':
+        st.subheader('Indirizzo non valido! Provane un altro.')
   with tab2:
     ''
     ind2=st.text_input('Indirizzo:',key='ind2')
@@ -115,13 +117,13 @@ with st.container():
         i=1
         ds=shapefile.Reader(path+'madrid_shapes.shp')
         dp=pd.read_csv(path+'madrid_prices.csv')
-        mod2=joblib.load(path+'rf_mr.sav')
+        mod2=joblib.load(path+'lr_mr.sav')
         poi2=pd.read_csv(path+'madrid_poi.csv')
       if loc2.address.find('Paris')>-1:
         i=3
         ds=shapefile.Reader(path+'paris_shapes.shp')
         dp=pd.read_csv(path+'paris_prices.csv')
-        mod2=joblib.load(path+'rf_pr.sav')
+        mod2=joblib.load(path+'lr_pr.sav')
         poi2=pd.read_csv(path+'paris_poi.csv')
       dpr2=min(dp.Prezzo)
       for s in range(len(ds.shapes())):
@@ -131,27 +133,29 @@ with st.container():
         if dpr2==dp.Distretto[p]:
           dpr2=dp.Prezzo[p]
       dis2=[]; nam2=[]
-      for t in ['Supermarket','Coworking','Metro','Treno','Università','Ospedale']:
-        d2=10**6
+      for t in ['Metro','Treno','Supermarket','Coworking','Università','Ospedale']:
+        d2=100
         for i in poi2[poi2.Tipologia==t].index:
-          if distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km*1000<d2:
-            d2=distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km*1000
+          if distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km<d2:
+            d2=distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km
             n2=poi2.Nome[i]
-        dis2.append(d2); nam2.append(n2)
-      pre2=round(mod2.predict([[dpr2,sup2,per2,wcp2,gia2,bal2,con2,lvt2,asc2,lvs2,ute2]])[0])
+        dis2.append(round(d2*1000)); nam2.append(n2)
+      pre2=round(mod2.predict([[dpr2,sup2,per2,wcp2,gia2,bal2,con2,lvt2,asc2,lvs2,ute2,
+                                dis2[0],dis2[1],dis2[2],dis2[3],dis2[4],dis2[5]]])[0])
       st.subheader(f'L\'affitto mensile stimato della stanza è {pre2}€')
       ''
       with st.expander('Punti di interesse:',True):
         ''
-        f'- Il supermarket più vicino è "{nam2[0]}" e dista {round(dis2[0])}m'
-        f'- Il coworking più vicino è "{nam2[1]}" e dista {round(dis2[1])}m'
-        f'- La metro più vicina è "{nam2[2]}" e dista {round(dis2[2])}m'
-        f'- Il treno più vicino è "{nam2[3]}" e dista {round(dis2[3])}m'
-        f'- L\'università più vicina è "{nam2[4]}" e dista {round(dis2[4])}m'
-        f'- L\'ospedale più vicino è "{nam2[5]}" e dista {round(dis2[5])}m'
+        f'- La metro più vicina è "{nam2[0]}" e dista {dis2[0]}m'
+        f'- Il treno più vicino è "{nam2[1]}" e dista {dis2[1]}m'
+        f'- Il supermarket più vicino è "{nam2[2]}" e dista {dis2[2]}m'
+        f'- Il coworking più vicino è "{nam2[3]}" e dista {dis2[3]}m'
+        f'- L\'università più vicina è "{nam2[4]}" e dista {dis2[4]}m'
+        f'- L\'ospedale più vicino è "{nam2[5]}" e dista {dis2[5]}m'
         ''
       ''
       with st.expander(loc2.address,False):
         st.map(coo2)
     except:
-      pass
+      if ind2!='':
+        st.subheader('Indirizzo non valido! Provane un altro.')
