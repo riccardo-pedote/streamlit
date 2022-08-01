@@ -71,7 +71,7 @@ with st.container():
         dis1.append(round(d1*1000)); nam1.append(n1)
       pre1=round(mod1.predict([[dpr1,cam1,sup1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,
                                 dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
-      st.subheader(f'L\'affitto mensile stimato della stanza è {pre1}€')
+      st.subheader(f'L\'affitto mensile stimato dell\'appartamento è {pre1}€')
       ''
       with st.expander('Punti di interesse:',True):
         ''
