@@ -67,8 +67,7 @@ with st.container():
             d1=distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km
             n1=poi1.Nome[i]
         dis1.append(round(d1*1000)); nam1.append(n1)
-      pre1=round(mod1.predict([[dpr1,cam1,sup1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,
-                                dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
+      pre1=round(mod1.predict([[dpr1,cam1,sup1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
       st.subheader(f'L\'affitto mensile stimato dell\'appartamento è {pre1}€')
       ''
       with st.expander('Punti di interesse:',True):
@@ -140,8 +139,7 @@ with st.container():
             d2=distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km
             n2=poi2.Nome[i]
         dis2.append(round(d2*1000)); nam2.append(n2)
-      pre2=round(mod2.predict([[dpr2,sup2,per2,wcp2,gia2,bal2,con2,lvt2,asc2,lvs2,ute2,
-                                dis2[0],dis2[1],dis2[2],dis2[3],dis2[4],dis2[5]]])[0])
+      pre2=round(mod2.predict([[dpr2,sup2,per2,wcp2,gia2,bal2,con2,lvt2,asc2,lvs2,ute2,dis2[0],dis2[1],dis2[2],dis2[3],dis2[4],dis2[5]]])[0])
       st.subheader(f'L\'affitto mensile stimato della stanza è {pre2}€')
       ''
       with st.expander('Punti di interesse:',True):
