@@ -37,7 +37,7 @@ with st.container():
     with col4:
       con1=st.checkbox('Condizionatore',key='con1')
     ''
-    if 1:#try:
+    try:
       loc1=geo.geocode(ind1)
       coo1=pd.DataFrame({'lat':[loc1.latitude],'lon':[loc1.longitude]})
       if loc1.address.find('Madrid')>-1:
@@ -82,9 +82,9 @@ with st.container():
       ''
       with st.expander(loc1.address,False):
         st.map(coo1)
-    #except:
-    #  if ind1!='':
-    #    st.subheader('Indirizzo non valido! Provane un altro.')
+    except:
+      if ind1!='':
+        st.subheader('Indirizzo non valido! Provane un altro.')
   with tab2:
     ''
     ind2=st.text_input('Indirizzo:',key='ind2')
@@ -109,7 +109,7 @@ with st.container():
       con2=st.checkbox('Condizionatore',key='con2')
       wcp2=st.checkbox('WC privato',key='wcp2')
     ''
-    if 1:#try:
+    try:
       loc2=geo.geocode(ind2)
       coo2=pd.DataFrame({'lat':[loc2.latitude],'lon':[loc2.longitude]})
       if loc2.address.find('Madrid')>-1:
@@ -154,6 +154,6 @@ with st.container():
       ''
       with st.expander(loc2.address,False):
         st.map(coo2)
-    #except:
-    #  if ind2!='':
-    #    st.subheader('Indirizzo non valido! Provane un altro.')
+    except:
+      if ind2!='':
+        st.subheader('Indirizzo non valido! Provane un altro.')
