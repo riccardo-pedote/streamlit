@@ -41,24 +41,24 @@ with st.container():
       loc1=geo.geocode(ind1)
       coo1=pd.DataFrame({'lat':[loc1.latitude],'lon':[loc1.longitude]})
       if loc1.address.find('Madrid')>-1:
-        i=1
-        ds=shapefile.Reader(path+'madrid_shapes.shp')
-        dp=pd.read_csv(path+'madrid_prices.csv')
+        i1=1
+        ds1=shapefile.Reader(path+'madrid_shapes.shp')
+        dp1=pd.read_csv(path+'madrid_prices.csv')
         mod1=joblib.load(path+'lr_mf.sav')
         poi1=pd.read_csv(path+'madrid_poi.csv')
       if loc1.address.find('Paris')>-1:
-        i=3
-        ds=shapefile.Reader(path+'paris_shapes.shp')
-        dp=pd.read_csv(path+'paris_prices.csv')
+        i1=3
+        ds1=shapefile.Reader(path+'paris_shapes.shp')
+        dp1=pd.read_csv(path+'paris_prices.csv')
         mod1=joblib.load(path+'lr_pf.sav')
         poi1=pd.read_csv(path+'paris_poi.csv')
-      dpr1=min(dp.Prezzo)
-      for s in range(len(ds.shapes())):
-        if Point(loc1.longitude,loc1.latitude).within(shape(ds.shapes()[s])):
-          dpr1=ds.records()[s][i]
-      for p in dp.index:
-        if dpr1==dp.Distretto[p]:
-          dpr1=dp.Prezzo[p]
+      dpr1=min(dp1.Prezzo)
+      for s in range(len(ds1.shapes())):
+        if Point(loc1.longitude,loc1.latitude).within(shape(ds1.shapes()[s])):
+          dpr1=ds1.records()[s][i1]
+      for p in dp1.index:
+        if dpr1==dp1.Distretto[p]:
+          dpr1=int(dp1.Prezzo[p])
       dis1=[]; nam1=[]
       for t in ['Metro','Treno','Supermarket','Coworking','Università','Ospedale']:
         d1=100
@@ -67,7 +67,7 @@ with st.container():
             d1=distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km
             n1=poi1.Nome[i]
         dis1.append(round(d1*1000)); nam1.append(n1)
-      pre1=round(mod1.predict([[dpr1,cam1,sup1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
+      pre1=round(mod1.predict([[dpr1,sup1,cam1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
       st.subheader(f'L\'affitto mensile stimato dell\'appartamento è {pre1}€')
       ''
       with st.expander('Punti di interesse:',True):
@@ -113,24 +113,24 @@ with st.container():
       loc2=geo.geocode(ind2)
       coo2=pd.DataFrame({'lat':[loc2.latitude],'lon':[loc2.longitude]})
       if loc2.address.find('Madrid')>-1:
-        i=1
-        ds=shapefile.Reader(path+'madrid_shapes.shp')
-        dp=pd.read_csv(path+'madrid_prices.csv')
+        i2=1
+        ds2=shapefile.Reader(path+'madrid_shapes.shp')
+        dp2=pd.read_csv(path+'madrid_prices.csv')
         mod2=joblib.load(path+'lr_mr.sav')
         poi2=pd.read_csv(path+'madrid_poi.csv')
       if loc2.address.find('Paris')>-1:
-        i=3
-        ds=shapefile.Reader(path+'paris_shapes.shp')
-        dp=pd.read_csv(path+'paris_prices.csv')
+        i2=3
+        ds2=shapefile.Reader(path+'paris_shapes.shp')
+        dp2=pd.read_csv(path+'paris_prices.csv')
         mod2=joblib.load(path+'lr_pr.sav')
         poi2=pd.read_csv(path+'paris_poi.csv')
-      dpr2=min(dp.Prezzo)
-      for s in range(len(ds.shapes())):
-        if Point(loc2.longitude,loc2.latitude).within(shape(ds.shapes()[s])):
-          dpr2=ds.records()[s][i]
-      for p in dp.index:
-        if dpr2==dp.Distretto[p]:
-          dpr2=dp.Prezzo[p]
+      dpr2=min(dp2.Prezzo)
+      for s in range(len(ds2.shapes())):
+        if Point(loc2.longitude,loc2.latitude).within(shape(ds2.shapes()[s])):
+          dpr2=ds2.records()[s][i2]
+      for p in dp2.index:
+        if dpr2==dp2.Distretto[p]:
+          dpr2=int(dp2.Prezzo[p])
       dis2=[]; nam2=[]
       for t in ['Metro','Treno','Supermarket','Coworking','Università','Ospedale']:
         d2=100
