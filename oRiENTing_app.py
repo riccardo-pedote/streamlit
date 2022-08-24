@@ -74,9 +74,9 @@ with st.container():
         for i in poi1[poi1.Tipologia==t].index:
           if distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km<d1:
             d1=distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km
-            pdd1.iloc[1,0]=poi1.Nome[i]
-            pdd1.iloc[1,1]=poi1.Latitudine[i]
-            pdd1.iloc[1,2]=poi1.Longitudine[i]
+            pdd1.iloc[p,0]=poi1.Nome[i]
+            pdd1.iloc[p,1]=poi1.Latitudine[i]
+            pdd1.iloc[p,2]=poi1.Longitudine[i]
         dis1.append(round(d1*1000))
         p=p+1
       pdd1.iloc[p,0]='Indirizzo'
