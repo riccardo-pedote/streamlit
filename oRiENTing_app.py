@@ -7,6 +7,7 @@ from geopy.distance import distance
 import shapefile
 from shapely.geometry import Point
 from shapely.geometry import shape
+import pydeck as pdk
 path='/app/streamlit/'
 geo=geopy.geocoders.Nominatim(user_agent='rp')
 with st.container():
@@ -39,7 +40,6 @@ with st.container():
     ''
     try:
       loc1=geo.geocode(ind1)
-      coo1=pd.DataFrame({'lat':[loc1.latitude],'lon':[loc1.longitude]})
       if loc1.address.find('Madrid')>-1:
         i1=1
         ds1=shapefile.Reader(path+'madrid_shapes.shp')
@@ -59,29 +59,43 @@ with st.container():
       for p in dp1.index:
         if dpr1==dp1.Distretto[p]:
           dpr1=int(dp1.Prezzo[p])
-      dis1=[]; nam1=[]
+      pdd1=pd.DataFrame({'Nome':list(range(7)),'Latitudine':list(range(7)),'Longitudine':list(range(7)),'Icona':[
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/a/a7/Map_marker_icon_–_Nicolas_Mollet_–_Subway_–_Transportation_–_Default.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/6/65/Map_marker_icon_–_Nicolas_Mollet_–_Steam_Locomotive_–_Transportation_–_Default.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/f/ff/Map_marker_icon_–_Nicolas_Mollet_–_Supermarket_–_Stores_–_iphone.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/f/f1/Map_marker_icon_–_Nicolas_Mollet_–_Work_office_–_Offices_–_iOS.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/1/16/Map_marker_icon_–_Nicolas_Mollet_–_University_–_Health_%26_Education_–_iOS.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/5/53/Map_marker_icon_–_Nicolas_Mollet_–_Hospital_–_Health_%26_Education_–_iOS.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/9/92/Map_marker_icon_–_Nicolas_Mollet_–_Home_–_People_–_Default.png','width':32,'height':37,'anchorY':37}]})
+      dis1=[]
+      p=0
       for t in ['Metro','Treno','Supermarket','Coworking','Università','Ospedale']:
         d1=100
         for i in poi1[poi1.Tipologia==t].index:
           if distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km<d1:
             d1=distance((loc1.latitude,loc1.longitude),(poi1.Latitudine[i],poi1.Longitudine[i])).km
-            n1=poi1.Nome[i]
-        dis1.append(round(d1*1000)); nam1.append(n1)
+            pdd1.iloc[1,0]=poi1.Nome[i]
+            pdd1.iloc[1,1]=poi1.Latitudine[i]
+            pdd1.iloc[1,2]=poi1.Longitudine[i]
+        dis1.append(round(d1*1000))
+        p=p+1
+      pdd1.iloc[p,0]='Indirizzo'
+      pdd1.iloc[p,1]=loc1.latitude
+      pdd1.iloc[p,2]=loc1.longitude
       pre1=round(mod1.predict([[dpr1,sup1,cam1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
-      st.subheader(f'L\'affitto mensile stimato dell\'appartamento è {pre1}€')
+      st.subheader(f'L\'affitto mensile stimato della stanza è {pre1}€')
       ''
-      with st.expander('Punti di interesse:',True):
+      with st.expander('Punti di interesse:',False):
+        f'- La metro più vicina è "{pdd1.iloc[0,0]}" e dista {dis1[0]}m'
+        f'- Il treno più vicino è "{pdd1.iloc[1,0]}" e dista {dis1[1]}m'
+        f'- Il supermarket più vicino è "{pdd1.iloc[2,0]}" e dista {dis1[2]}m'
+        f'- Il coworking più vicino è "{pdd1.iloc[3,0]}" e dista {dis1[3]}m'
+        f'- L\'università più vicina è "{pdd1.iloc[4,0]}" e dista {dis1[4]}m'
+        f'- L\'ospedale più vicino è "{pdd1.iloc[5,0]}" e dista {dis1[5]}m'
         ''
-        f'- La metro più vicina è "{nam1[0]}" e dista {dis1[0]}m'
-        f'- Il treno più vicino è "{nam1[1]}" e dista {dis1[1]}m'
-        f'- Il supermarket più vicino è "{nam1[2]}" e dista {dis1[2]}m'
-        f'- Il coworking più vicino è "{nam1[3]}" e dista {dis1[3]}m'
-        f'- L\'università più vicina è "{nam1[4]}" e dista {dis1[4]}m'
-        f'- L\'ospedale più vicino è "{nam1[5]}" e dista {dis1[5]}m'
-        ''
-      ''
-      with st.expander(loc1.address,False):
-        st.map(coo1)
+        icon_layer=pdk.Layer('IconLayer',data=pdd1,get_icon='Icona',get_position=['Longitudine','Latitudine'],get_size=60,pickable=True)
+        view_state=pdk.ViewState(longitude=loc1.longitude,latitude=loc1.latitude,zoom=14)
+        st.pydeck_chart(pdk.Deck(layers=[icon_layer], initial_view_state=view_state,tooltip={'text':'{Nome}'}))
     except:
       if ind1!='':
         st.subheader('Indirizzo non valido! Provane un altro.')
@@ -111,7 +125,6 @@ with st.container():
     ''
     try:
       loc2=geo.geocode(ind2)
-      coo2=pd.DataFrame({'lat':[loc2.latitude],'lon':[loc2.longitude]})
       if loc2.address.find('Madrid')>-1:
         i2=1
         ds2=shapefile.Reader(path+'madrid_shapes.shp')
@@ -131,29 +144,43 @@ with st.container():
       for p in dp2.index:
         if dpr2==dp2.Distretto[p]:
           dpr2=int(dp2.Prezzo[p])
-      dis2=[]; nam2=[]
+      pdd2=pd.DataFrame({'Nome':list(range(7)),'Latitudine':list(range(7)),'Longitudine':list(range(7)),'Icona':[
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/a/a7/Map_marker_icon_–_Nicolas_Mollet_–_Subway_–_Transportation_–_Default.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/6/65/Map_marker_icon_–_Nicolas_Mollet_–_Steam_Locomotive_–_Transportation_–_Default.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/f/ff/Map_marker_icon_–_Nicolas_Mollet_–_Supermarket_–_Stores_–_iphone.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/f/f1/Map_marker_icon_–_Nicolas_Mollet_–_Work_office_–_Offices_–_iOS.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/1/16/Map_marker_icon_–_Nicolas_Mollet_–_University_–_Health_%26_Education_–_iOS.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/5/53/Map_marker_icon_–_Nicolas_Mollet_–_Hospital_–_Health_%26_Education_–_iOS.png','width':32,'height':37,'anchorY':37},
+        {'url':'https://upload.wikimedia.org/wikipedia/commons/9/92/Map_marker_icon_–_Nicolas_Mollet_–_Home_–_People_–_Default.png','width':32,'height':37,'anchorY':37}]})
+      dis2=[]
+      p=0
       for t in ['Metro','Treno','Supermarket','Coworking','Università','Ospedale']:
         d2=100
         for i in poi2[poi2.Tipologia==t].index:
           if distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km<d2:
             d2=distance((loc2.latitude,loc2.longitude),(poi2.Latitudine[i],poi2.Longitudine[i])).km
-            n2=poi2.Nome[i]
-        dis2.append(round(d2*1000)); nam2.append(n2)
+            pdd2.iloc[p,0]=poi2.Nome[i]
+            pdd2.iloc[p,1]=poi2.Latitudine[i]
+            pdd2.iloc[p,2]=poi2.Longitudine[i]
+        dis2.append(round(d2*1000))
+        p=p+1
+      pdd2.iloc[p,0]='Indirizzo'
+      pdd2.iloc[p,1]=loc2.latitude
+      pdd2.iloc[p,2]=loc2.longitude
       pre2=round(mod2.predict([[dpr2,sup2,per2,wcp2,gia2,bal2,con2,lvt2,asc2,lvs2,ute2,dis2[0],dis2[1],dis2[2],dis2[3],dis2[4],dis2[5]]])[0])
       st.subheader(f'L\'affitto mensile stimato della stanza è {pre2}€')
       ''
-      with st.expander('Punti di interesse:',True):
+      with st.expander('Punti di interesse:',False):
+        f'- La metro più vicina è "{pdd2.iloc[0,0]}" e dista {dis2[0]}m'
+        f'- Il treno più vicino è "{pdd2.iloc[1,0]}" e dista {dis2[1]}m'
+        f'- Il supermarket più vicino è "{pdd2.iloc[2,0]}" e dista {dis2[2]}m'
+        f'- Il coworking più vicino è "{pdd2.iloc[3,0]}" e dista {dis2[3]}m'
+        f'- L\'università più vicina è "{pdd2.iloc[4,0]}" e dista {dis2[4]}m'
+        f'- L\'ospedale più vicino è "{pdd2.iloc[5,0]}" e dista {dis2[5]}m'
         ''
-        f'- La metro più vicina è "{nam2[0]}" e dista {dis2[0]}m'
-        f'- Il treno più vicino è "{nam2[1]}" e dista {dis2[1]}m'
-        f'- Il supermarket più vicino è "{nam2[2]}" e dista {dis2[2]}m'
-        f'- Il coworking più vicino è "{nam2[3]}" e dista {dis2[3]}m'
-        f'- L\'università più vicina è "{nam2[4]}" e dista {dis2[4]}m'
-        f'- L\'ospedale più vicino è "{nam2[5]}" e dista {dis2[5]}m'
-        ''
-      ''
-      with st.expander(loc2.address,False):
-        st.map(coo2)
+        icon_layer=pdk.Layer('IconLayer',data=pdd2,get_icon='Icona',get_position=['Longitudine','Latitudine'],get_size=60,pickable=True)
+        view_state=pdk.ViewState(longitude=loc2.longitude,latitude=loc2.latitude,zoom=14)
+        st.pydeck_chart(pdk.Deck(layers=[icon_layer], initial_view_state=view_state,tooltip={'text':'{Nome}'}))
     except:
       if ind2!='':
         st.subheader('Indirizzo non valido! Provane un altro.')
