@@ -79,7 +79,7 @@ with st.container():
             pdd1.iloc[p,2]=poi1.Longitudine[i]
         dis1.append(round(d1*1000))
         p=p+1
-      pdd1.iloc[p,0]='Indirizzo'
+      pdd1.iloc[p,0]=loc1.address
       pdd1.iloc[p,1]=loc1.latitude
       pdd1.iloc[p,2]=loc1.longitude
       pre1=round(mod1.predict([[dpr1,sup1,cam1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
@@ -164,7 +164,7 @@ with st.container():
             pdd2.iloc[p,2]=poi2.Longitudine[i]
         dis2.append(round(d2*1000))
         p=p+1
-      pdd2.iloc[p,0]='Indirizzo'
+      pdd2.iloc[p,0]=loc2.address
       pdd2.iloc[p,1]=loc2.latitude
       pdd2.iloc[p,2]=loc2.longitude
       pre2=round(mod2.predict([[dpr2,sup2,per2,wcp2,gia2,bal2,con2,lvt2,asc2,lvs2,ute2,dis2[0],dis2[1],dis2[2],dis2[3],dis2[4],dis2[5]]])[0])
