@@ -83,7 +83,7 @@ with st.container():
       pdd1.iloc[p,1]=loc1.latitude
       pdd1.iloc[p,2]=loc1.longitude
       pre1=round(mod1.predict([[dpr1,sup1,cam1,per1,gia1,bal1,con1,lvt1,asc1,lvs1,ute1,dis1[0],dis1[1],dis1[2],dis1[3],dis1[4],dis1[5]]])[0])
-      st.subheader(f'L\'affitto mensile stimato della stanza è {pre1}€')
+      st.subheader(f'L\'affitto mensile stimato dell\'appartamento è {pre1}€')
       ''
       with st.expander('Punti di interesse:',False):
         f'- La metro più vicina è "{pdd1.iloc[0,0]}" e dista {dis1[0]}m'
