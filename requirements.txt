@@ -6,3 +6,8 @@ pyshp
 shapely
 matplotlib
 pydeck
+
+openai
+PIL
+requests
+io
