@@ -16,5 +16,9 @@ with con1:
   try:
     st.text('')
     st.image(url)
+    st.text('')
+    buf=io.BytesIO()
+    PIL.Image.open(requests.get(url,stream=True).raw).save(buf,format='png')
+    st.download_button('DOWNLOAD',data=buf.getvalue(),mime='image/png',file_name=text+'.png')
   except:
     pass
