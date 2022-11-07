@@ -8,5 +8,3 @@ matplotlib
 pydeck
 
 openai
-requests
-io
