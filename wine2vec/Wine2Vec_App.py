@@ -4,7 +4,6 @@ import pandas as pd
 from gensim.models import KeyedVectors
 with st.container():
   st.image(path+'wine_logo.png',use_column_width=True)
-  #emb=Word2Vec.load(path+'wv.vec',binary=True)
   emb=KeyedVectors.load_word2vec_format(path+'wv.vec',binary=True)
   tokens=[i.capitalize().replace('_',' ') for i in emb.index_to_key]
   pos=st.multiselect('Desired features:',tokens)
