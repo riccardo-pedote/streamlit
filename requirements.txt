@@ -6,4 +6,3 @@ pyshp
 shapely
 matplotlib
 pydeck
-gensim
