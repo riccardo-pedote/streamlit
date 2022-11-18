@@ -6,8 +6,7 @@ with st.container():
   st.image(path+'wine_logo.png',use_column_width=True)
   #emb=Word2Vec.load(path+'wv.vec',binary=True)
   emb=KeyedVectors.load_word2vec_format(path+'wv.vec',binary=True)
-  tokens=emb.index_to_key
-  tokens=[i.capitalize().replace('_',' ') for i in tokens]
+  tokens=[i.capitalize().replace('_',' ') for i in emb.index_to_key]
   pos=st.multiselect('Desired features:',tokens)
   neg=st.multiselect('Undesired features:',tokens)
   ''
