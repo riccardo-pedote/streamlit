@@ -6,5 +6,4 @@ pyshp
 shapely
 matplotlib
 pydeck
-
-openai
+gensim
