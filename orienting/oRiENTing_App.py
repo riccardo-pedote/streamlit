@@ -11,7 +11,7 @@ import pydeck as pdk
 path='/app/streamlit/'
 geo=geopy.geocoders.Nominatim(user_agent='rp')
 with st.container():
-  st.image(image.imread(path+'logo.png'))
+  st.image(image.imread(path+'orienting_logo.png'))
   tab1,tab2=st.tabs(['Appartamento','Stanza'])
   with tab1:
     ''
