@@ -8,7 +8,7 @@ import shapefile
 from shapely.geometry import Point
 from shapely.geometry import shape
 import pydeck as pdk
-path='/app/streamlit/'
+path='/app/streamlit/orienting/'
 geo=geopy.geocoders.Nominatim(user_agent='rp')
 with st.container():
   st.image(image.imread(path+'orienting_logo.png'))
