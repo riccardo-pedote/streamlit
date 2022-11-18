@@ -1,4 +1,4 @@
-path='/app/streamlit/'
+path='/app/streamlit/wine2vec/'
 import streamlit as st
 import pandas as pd
 from gensim.models import KeyedVectors
