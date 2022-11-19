@@ -6,8 +6,8 @@ with st.container():
   st.image(path+'wine_logo.png',use_column_width=True)
   emb=KeyedVectors.load_word2vec_format(path+'wv.vec',binary=True)
   tokens=[i.capitalize().replace('_',' ') for i in emb.index_to_key]
-  pos=st.multiselect('Desired features:',tokens)
-  neg=st.multiselect('Undesired features:',tokens)
+  pos=st.multiselect('Desired wines or features:',tokens)
+  neg=st.multiselect('Undesired wines or features:',tokens)
   df=pd.read_csv(path+'variety.csv')
   col1,col2=st.columns(2)
   min_p=col1.slider('Min price:',0,100,0)
