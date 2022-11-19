@@ -23,7 +23,10 @@ with st.container():
       if len(top)==5:
         break
     for i in top:
-      st.text('• '+i)
+      p=round(df.price[df.variety==i].iloc[0])
+      st.text(f'• {i} ({p}$)')
   ''
   with st.expander('Wine Chart'):
     st.image(path+'wine_compass.jpg')
+  ''
+  st.caption('Design by Riccardo Pedote, Sara Gragnagniello, Isabel Mendez')
