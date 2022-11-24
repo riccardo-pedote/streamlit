@@ -34,4 +34,4 @@ with st.container():
   with st.expander('Wine Chart'):
     st.image(path+'wine_compass.jpg')
   ''
-  st.caption('Designed by Riccardo Pedote, Sara Gragnagniello, Isabel Mendez')
+  st.caption('Designed by Riccardo Pedote, Sara Gragnaniello, Isabel Mendez')
